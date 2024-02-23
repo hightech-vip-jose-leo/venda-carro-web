@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      * {
+        font-family: sans-serif;
+      }
+
+      body {
+        background-color: rgb(136, 142, 114);
+        background-image: url(https://www-cdn.bigcommerce.com/assets/_1200x630_crop_center-center_82_none/Article_Thumbnail_Ecommerce_Website.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th {
+        background-color: rgb(108, 108, 195);
+        color: white;
+        padding: 15px;
+      }
+      td {
+        padding: 10px 20px;
+        text-align: center;
+      }
+      tr:nth-child(2n) {
+        /* seletor CSS */
+        background-color: rgb(222, 230, 230);
+      }
+      input {
+        padding: 10px 15px;
+
+        border: 1px solid black;
+        border-radius: 20px;
+        outline: 0;
+        transition: 0.3s;
+      }
+      input:focus {
+        border-color: rgb(108, 108, 195);
+      }
+      button {
+        padding: 10px 25px;
+        border-radius: 20px;
+        outline: 0px;
+        border: none;
+        background-color: rgb(108, 108, 195);
+        color: white;
+      }
+      select {
+        padding: 10px 15px;
+        border-radius: 20px;
+        border: 1px solid black;
+      }
+      form {
+        width: 600px;
+        margin: auto;
+      }
+      .div-form {
+        display: grid;
+        grid-template-columns: 300px 300px;
+        grid-column-gap: 10px;
+        grid-row-gap: 20px;
+        margin-bottom: 20px;
+      }
+      .cabecalho {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .imagem-carro {
+        width: 150px;
+        height: 112.5px;
+      }
+    </style>
+
+    <script>
+      //criar variavel para o vetor de vetorCarros
+      // criar funcao salvar
+      //  acessar campos pelo document.getelement.byid para cada campo e pegar o valor (value) do campo
+      //   criar um novo objeto "carro" com os valores coletados
+      //    adicionar um novo objeto no vetor
+      //     limpar os campos
+
+      let vetorCarros = [];
+      let vetorCarrosCopia = [];
+      let idAtual = 0;
+      let idEdicao = 0;
+      let modoEdicao = false;
+
+      function adicionarCarro() {
+        let modelo = document.getElementById("modelo").value;
+        let cor = document.getElementById("cor").value;
+        let ano = document.getElementById("ano").value;
+        let placa = document.getElementById("placa").value;
+        let imagem = document.getElementById("imagem").value;
+
+        let carro = {
+          modelo: modelo,
+          cor: cor,
+          ano: ano,
+          placa: placa,
+          imagem: imagem,
+          vendido: false,
+        };
+
+        if (modoEdicao == true) {
+          // salvar a edicao
+          // 1. buscar o indice do carro a ser salvo utilizando o id edicao (findIndex) armazenar o indice em uma variavel local (let i)
+          // 2. com o indice encontrado no passo anterior atribuir o objeto carro na posicao encontrada do vetor carros (vetorCarros[i] = carro)
+          // 3. atribuir false na variavel global modoEdicao (modoEdicao = false)
+
+          let i = vetorCarros.findIndex(function (carroDaVez) {
+            return carroDaVez.id == idEdicao;
+          });
+          carro.id = idEdicao;
+          vetorCarros[i] = carro;
+
+          modoEdicao = false;
+        } else {
+          // adicionar carro novo
+          carro.id = idAtual++;
+          vetorCarros.push(carro);
+        }
+
+        document.getElementById("modelo").value = "";
+        document.getElementById("cor").value = "";
+        document.getElementById("ano").value = "";
+        document.getElementById("placa").value = "";
+        document.getElementById("imagem").value = "";
+
+        listarCarros();
+      }
+
+      // 1 criar função listar
+      // 1.1 limpando o Corpo da Tabela <Tbody>
+      // 2 buscar elemento tbody
+      // 3 criar um tr dentro do tbody
+      // 4 ao salvar um carro chamar a função listas
+
+      function listarCarros() {
+        let corpoTabela = document.getElementById("corpoTabela");
+
+        corpoTabela.innerHTML = "";
+
+        // Chamar a funcao aplicar filtro
+        aplicarFiltro();
+
+        for (i = 0; i < vetorCarrosCopia.length; i++) {
+          corpoTabela.innerHTML += `
+          <tr>
+            <td>
+              <img class="imagem-carro" src="${vetorCarrosCopia[i].imagem}">
+             
+            </td>
+            <td>${vetorCarrosCopia[i].id}</td>
+            <td>${vetorCarrosCopia[i].modelo}</td>
+            <td>${vetorCarrosCopia[i].cor}</td>
+            <td>${vetorCarrosCopia[i].ano}</td>
+            <td>${vetorCarrosCopia[i].placa}</td>
+            <td>
+              <input 
+                onclick="checkVendido(${vetorCarrosCopia[i].id})" 
+                type="checkbox" 
+                ${vetorCarrosCopia[i].vendido ? "checked" : ""}/>
+            </td>
+            <td>
+              <button onclick="editarCarro(${vetorCarrosCopia[i].id})">
+                Editar
+              </button>
+              <button onclick="removerCarro(${vetorCarrosCopia[i].id})">
+                Remover
+              </button>
+            </td>
+          </tr>
+          `;
+        }
+      }
+
+      function aplicarFiltro() {
+        // acessar opcao da selecao do filtro (pegar value do select escolhida pelo "usuario")
+        let opcaoSelecionada = document.getElementById("filtro").value;
+
+        // aplicar filter
+        switch (opcaoSelecionada) {
+          case "todos":
+            vetorCarrosCopia = vetorCarros; // shallow copy
+            break;
+          case "vendido":
+            // deep copy
+            vetorCarrosCopia = vetorCarros.filter(function (carroDaVez) {
+              return carroDaVez.vendido == true;
+            });
+            break;
+          case "avenda":
+            // deep copy
+            vetorCarrosCopia = vetorCarros.filter(function (carroDaVez) {
+              return carroDaVez.vendido == false;
+            });
+            break;
+          default:
+            console.log("escolheu opcao invalida");
+            break;
+        }
+      }
+
+      // 1 criar função checkVendido que recebera como parametro o id do carro
+      // 2 buscar o indice no vetor do carro que possui o id  fornecido no parametro
+      // 3 colocar vendido = true para o carro na posição do indice descoberto
+      function checkVendido(id) {
+        let i = vetorCarros.findIndex(function (carro) {
+          return carro.id == id;
+        });
+        vetorCarros[i].vendido = !vetorCarros[i].vendido;
+      }
+
+      // 1. Criar funcao remover carro que recebe como parametro o id do carro
+      // 2. Buscar o indice do vetor do carro que pussue o id = do parametro (utilizar metodo findIndex no vetor vetorCarros)
+      // 3. Remover o elemento do vetor vetorCarros do indice descoberto (utilizar metodo splice no vetor vetorCarros)
+      // 4. Relistar tabela de vetorCarros
+
+      function removerCarro(id) {
+        let i = vetorCarros.findIndex(function (carro) {
+          return carro.id == id;
+        });
+
+        vetorCarros.splice(i, 1);
+
+        listarCarros();
+      }
+
+      // 1. Criar funcao editar carro que recebe como parametro o id do carro
+      // 2. Armazenar o id recebido como parametro em uma variavel global chamada "idEdicao"
+      // 3. Atribuir true na variavel global chamada "modoEdicao"
+      // 4. Buscar carro a ser editado no vetor vetorCarros utilizando o id recebido como parametro (find)
+      // 5. buscar input com getElementById e atribuir o value = ao atributo do carro edicao Ex: document.getElementById("modelo").value = carroEdicao.modelo
+      // 6. Alterar funcao adicionarCarro para alterar carro já existente (no vetor vetorCarros) quando o modo edicao for igual a true
+
+      function editarCarro(id) {
+        modoEdicao = true;
+        let carroEdicao = vetorCarros.find(function (carro) {
+          return carro.id == id;
+        });
+
+        idEdicao = carroEdicao.id;
+
+        document.getElementById("modelo").value = carroEdicao.modelo;
+        document.getElementById("cor").value = carroEdicao.cor;
+        document.getElementById("ano").value = carroEdicao.ano;
+        document.getElementById("placa").value = carroEdicao.placa;
+        document.getElementById("imagem").value = carroEdicao.imagem;
+      }
+    </script>
+  </head>
+  <body>
+    <div class="cabecalho">
+      <h1>Sistema de Vendas de Carros</h1>
+      <select id="filtro" onchange="listarCarros()">
+        <option value="todos">Todos</option>
+        <option value="vendido">Vendido</option>
+        <option value="avenda">À venda</option>
+      </select>
+    </div>
+
+    <form>
+      <div class="div-form">
+        <input placeholder="Modelo" id="modelo" type="text" />
+        <input placeholder="Cor" id="cor" type="text" />
+        <input placeholder="Ano" id="ano" type="number" />
+        <input placeholder="Placa" id="placa" type="text" />
+        <input placeholder="Link da Imagem" id="imagem" type="text" />
+      </div>
+
+      <button type="button" onclick="adicionarCarro()">Salvar</button>
+    </form>
+
+    <table>
+      <!-- cabeçalho -->
+      <thead>
+        <th>Imagem</th>
+        <th>Id</th>
+        <th>Modelo</th>
+        <th>Cor</th>
+        <th>Ano</th>
+        <th>Placa</th>
+        <th>Vendido</th>
+        <th>Ações</th>
+      </thead>
+      <!-- corpo da tabela -->
+      <tbody id="corpoTabela"></tbody>
+    </table>
+  </body>
+</html>
