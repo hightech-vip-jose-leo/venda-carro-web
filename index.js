@@ -44,7 +44,8 @@ function adicionarCarro() {
     } else {
         // adicionar carro novo
         carro.id = idAtual++;
-        vetorCarros.push(carro);
+        // chamar o postCarro()
+        // chamar o getCarros()
     }
 
     document.getElementById("modelo").value = "";
@@ -179,6 +180,14 @@ async function getCarros() {
     const resposta = await axios.get("http://localhost:3000/carros");
     vetorCarros = resposta.data;
     listarCarros();
+}
+
+/**
+ * Função responsável por enviar uma requisição POST para a API Venda Carro
+ * @param {Object} carro - objeto carro a ser cadastrado
+ */
+function postCarro(carro) {
+
 }
 
 getCarros();
