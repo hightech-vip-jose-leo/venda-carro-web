@@ -11,11 +11,6 @@
       }
 
       body {
-        background-color: rgb(136, 142, 114);
-        background-image: url(https://www-cdn.bigcommerce.com/assets/_1200x630_crop_center-center_82_none/Article_Thumbnail_Ecommerce_Website.jpg);
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
       }
 
       table {
@@ -82,6 +77,8 @@
         height: 112.5px;
       }
     </style>
+
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
 
     <script>
       //criar variavel para o vetor de vetorCarros
@@ -259,6 +256,14 @@
         document.getElementById("placa").value = carroEdicao.placa;
         document.getElementById("imagem").value = carroEdicao.imagem;
       }
+
+      async function getCarros() {
+        const resposta = await axios.get("http://localhost:3000/carros");
+        vetorCarros = resposta.data;
+        listarCarros();
+      }
+
+      getCarros();
     </script>
   </head>
   <body>
