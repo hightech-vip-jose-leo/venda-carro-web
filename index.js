@@ -8,7 +8,6 @@
 
 let vetorCarros = [];
 let vetorCarrosCopia = [];
-let idAtual = 0;
 let idEdicao = 0;
 let modoEdicao = false;
 
@@ -42,8 +41,6 @@ async function adicionarCarro() {
 
         modoEdicao = false;
     } else {
-        // adicionar carro novo
-        carro.id = idAtual++;
         // chamar o postCarro()
         await postCarro(carro);
         // chamar o getCarros()
