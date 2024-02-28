@@ -12,7 +12,7 @@ let idAtual = 0;
 let idEdicao = 0;
 let modoEdicao = false;
 
-function adicionarCarro() {
+async function adicionarCarro() {
     let modelo = document.getElementById("modelo").value;
     let cor = document.getElementById("cor").value;
     let ano = document.getElementById("ano").value;
@@ -45,7 +45,9 @@ function adicionarCarro() {
         // adicionar carro novo
         carro.id = idAtual++;
         // chamar o postCarro()
+        await postCarro(carro);
         // chamar o getCarros()
+        await getCarros();
     }
 
     document.getElementById("modelo").value = "";
@@ -63,9 +65,10 @@ function adicionarCarro() {
 // 3 criar um tr dentro do tbody
 // 4 ao salvar um carro chamar a função listas
 
-function listarCarros() {
+async function listarCarros() {
+    await getCarros(); // antes de listar, pega vetor de carros atualizados com a API
+    
     let corpoTabela = document.getElementById("corpoTabela");
-
     corpoTabela.innerHTML = "";
 
     // Chamar a funcao aplicar filtro
@@ -176,18 +179,21 @@ function editarCarro(id) {
     document.getElementById("imagem").value = carroEdicao.imagem;
 }
 
+/**
+ * Função responsável por enviar uma requisição GET para API Venda Carro
+ * e armazenar o dado da resposta obtida (lista de carros cadastrados)
+ */
 async function getCarros() {
     const resposta = await axios.get("http://localhost:3000/carros");
     vetorCarros = resposta.data;
-    listarCarros();
 }
 
 /**
  * Função responsável por enviar uma requisição POST para a API Venda Carro
  * @param {Object} carro - objeto carro a ser cadastrado
  */
-function postCarro(carro) {
-
+async function postCarro(carro) {
+    const resposta = await axios.post("http://localhost:3000/carros", carro);
 }
 
-getCarros();
+listarCarros();
