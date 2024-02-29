@@ -28,23 +28,15 @@ async function adicionarCarro() {
     };
 
     if (modoEdicao == true) {
-        // salvar a edicao
-        // 1. buscar o indice do carro a ser salvo utilizando o id edicao (findIndex) armazenar o indice em uma variavel local (let i)
-        // 2. com o indice encontrado no passo anterior atribuir o objeto carro na posicao encontrada do vetor carros (vetorCarros[i] = carro)
-        // 3. atribuir false na variavel global modoEdicao (modoEdicao = false)
-
-        let i = vetorCarros.findIndex(function (carroDaVez) {
-            return carroDaVez.id == idEdicao;
-        });
+        // atribuir o carro.id como idEdicao
         carro.id = idEdicao;
-        vetorCarros[i] = carro;
-
+        // chamar o putCarro()
+        await putCarro(carro);
+        // tira o modo edição
         modoEdicao = false;
     } else {
         // chamar o postCarro()
         await postCarro(carro);
-        // chamar o getCarros()
-        await getCarros();
     }
 
     document.getElementById("modelo").value = "";
@@ -61,7 +53,6 @@ async function adicionarCarro() {
 // 2 buscar elemento tbody
 // 3 criar um tr dentro do tbody
 // 4 ao salvar um carro chamar a função listas
-
 async function listarCarros() {
     await getCarros(); // antes de listar, pega vetor de carros atualizados com a API
     
@@ -133,10 +124,11 @@ function aplicarFiltro() {
 // 2 buscar o indice no vetor do carro que possui o id  fornecido no parametro
 // 3 colocar vendido = true para o carro na posição do indice descoberto
 function checkVendido(id) {
-    let i = vetorCarros.findIndex(function (carro) {
+    let carroAtualizacao = vetorCarros.find(function (carro) {
         return carro.id == id;
     });
-    vetorCarros[i].vendido = !vetorCarros[i].vendido;
+    carroAtualizacao.vendido = !carroAtualizacao.vendido;
+    putCarro(carroAtualizacao);
 }
 
 // 1. Criar funcao remover carro que recebe como parametro o id do carro
@@ -190,7 +182,15 @@ async function getCarros() {
  * @param {Object} carro - objeto carro a ser cadastrado
  */
 async function postCarro(carro) {
-    const resposta = await axios.post("http://localhost:3000/carros", carro);
+    await axios.post("http://localhost:3000/carros", carro);
+}
+
+/**
+ * Função responsável por enviar uma requisição PUT para a API Venda Carro
+ * @param {Object} carro  - objeto carro a ser autalizado
+ */
+async function putCarro(carro) {
+    await axios.put("http://localhost:3000/carros", carro);
 }
 
 listarCarros();
