@@ -136,13 +136,8 @@ function checkVendido(id) {
 // 3. Remover o elemento do vetor vetorCarros do indice descoberto (utilizar metodo splice no vetor vetorCarros)
 // 4. Relistar tabela de vetorCarros
 
-function removerCarro(id) {
-    let i = vetorCarros.findIndex(function (carro) {
-        return carro.id == id;
-    });
-
-    vetorCarros.splice(i, 1);
-
+async function removerCarro(id) {
+    await deleteCarro(id);
     listarCarros();
 }
 
@@ -187,10 +182,18 @@ async function postCarro(carro) {
 
 /**
  * Função responsável por enviar uma requisição PUT para a API Venda Carro
- * @param {Object} carro  - objeto carro a ser autalizado
+ * @param {Object} carro - objeto carro a ser autalizado
  */
 async function putCarro(carro) {
     await axios.put("http://localhost:3000/carros", carro);
+}
+
+/**
+ * Função responsável por enviar uma requisição DELETE para a API Venda Carro
+ * @param {Number} carroId - ID do carro a ser removido
+ */
+async function deleteCarro(carroId){
+    await axios.delete("http://localhost:3000/carros/" + carroId);
 }
 
 listarCarros();
