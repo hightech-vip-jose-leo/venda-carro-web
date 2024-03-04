@@ -137,8 +137,13 @@ function checkVendido(id) {
 // 4. Relistar tabela de vetorCarros
 
 async function removerCarro(id) {
-    await deleteCarro(id);
-    listarCarros();
+    try {
+        await deleteCarro(id + 1);
+        listarCarros();
+    } catch(erro) {
+        console.log(erro);
+        alert(erro.response.data);
+    }
 }
 
 // 1. Criar funcao editar carro que recebe como parametro o id do carro
