@@ -69,11 +69,8 @@ async function listarCarros() {
               <img class="imagem-carro" src="${vetorCarrosCopia[i].imagem}">
              
             </td>
-            <td>${vetorCarrosCopia[i].id}</td>
             <td>${vetorCarrosCopia[i].modelo}</td>
-            <td>${vetorCarrosCopia[i].cor}</td>
             <td>${vetorCarrosCopia[i].ano}</td>
-            <td>${vetorCarrosCopia[i].placa}</td>
             <td>
               <input 
                 onclick="checkVendido(${vetorCarrosCopia[i].id})" 

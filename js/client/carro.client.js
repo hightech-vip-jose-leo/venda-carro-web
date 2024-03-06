@@ -8,6 +8,16 @@ async function getCarros() {
 }
 
 /**
+ * Função responsável por enviar uma requisição GET para API Venda Carro
+ * informando o id do carro a ser buscado como path param (parâmetro de rota/URL)
+ * @param {Number} id - id do carro a ser buscado
+ */
+async function getCarroPorId(id) {
+    const resposta = await axios.get("http://localhost:3000/carros/" + id);
+    return resposta.data;
+}
+
+/**
  * Função responsável por enviar uma requisição POST para a API Venda Carro
  * @param {Object} carro - objeto carro a ser cadastrado
  */
